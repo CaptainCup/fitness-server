@@ -12,7 +12,10 @@ export class Equipment {
   description: string;
 
   @Prop()
-  configuration: { image?: string; text: string }[];
+  image?: string;
+
+  @Prop()
+  configuration?: { image?: string; text: string }[];
 }
 
 export const EquipmentSchema = SchemaFactory.createForClass(Equipment);
