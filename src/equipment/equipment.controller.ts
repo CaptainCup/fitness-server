@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { EquipmentService } from './equipment.service';
@@ -24,5 +32,18 @@ export class EquipmentController {
     @Body() createEquipmentDto: CreateEquipmentDto,
   ): Promise<Equipment> {
     return this.equipmentService.create(createEquipmentDto);
+  }
+
+  @Patch('/:id')
+  updateEquipment(
+    @Param('id') id: string,
+    @Body() createEquipmentDto: CreateEquipmentDto,
+  ): Promise<Equipment> {
+    return this.equipmentService.update(id, createEquipmentDto);
+  }
+
+  @Delete('/:id')
+  deleteEquipment(@Param('id') id: string): Promise<void> {
+    return this.equipmentService.delete(id);
   }
 }
