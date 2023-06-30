@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { EquipmentService } from './equipment.service';
@@ -12,6 +12,11 @@ export class EquipmentController {
   @Get()
   getEquipmentList(): Promise<Equipment[]> {
     return this.equipmentService.getList();
+  }
+
+  @Get('/:id')
+  async getServiceByID(@Param('id') id: string): Promise<Equipment | null> {
+    return this.equipmentService.getById(id);
   }
 
   @Post()

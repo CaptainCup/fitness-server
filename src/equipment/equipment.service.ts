@@ -18,4 +18,8 @@ export class EquipmentService {
   async getList(): Promise<Equipment[]> {
     return this.equipmentModel.find().exec();
   }
+
+  async getById(id: string): Promise<Equipment | null> {
+    return this.equipmentModel.findById(id).exec();
+  }
 }
