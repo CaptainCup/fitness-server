@@ -6,9 +6,11 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
+import { GetEquipmentDto } from './dto/get-equipment.dto';
 import { EquipmentService } from './equipment.service';
 import { Equipment } from './schemas/equipment.schema';
 
@@ -18,8 +20,10 @@ export class EquipmentController {
   constructor(private readonly equipmentService: EquipmentService) {}
 
   @Get()
-  getEquipmentList(): Promise<Equipment[]> {
-    return this.equipmentService.getList();
+  getEquipmentList(
+    @Query() getEquipmentDto: GetEquipmentDto,
+  ): Promise<{ items: Equipment[]; count: number }> {
+    return this.equipmentService.getList(getEquipmentDto);
   }
 
   @Get('/:id')
