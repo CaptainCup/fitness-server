@@ -28,14 +28,16 @@ export class Exercise {
   execution?: { image?: string; text: string }[];
 
   @ApiPropertyOptional()
-  @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    ref: 'Equipment',
-  })
+  @Prop([
+    {
+      type: MongooseSchema.Types.ObjectId,
+      ref: 'Equipment',
+    },
+  ])
   equipment?: MongooseSchema.Types.ObjectId[];
 
   @ApiPropertyOptional()
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Exercise' })
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Exercise' }])
   similar?: MongooseSchema.Types.ObjectId[];
 }
 

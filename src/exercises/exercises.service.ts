@@ -34,6 +34,7 @@ export class ExercisesService {
       .find(filterQuery)
       .limit(parseInt(limit))
       .skip(parseInt(offset))
+      .populate('equipment')
       .exec();
 
     const count = await this.exerciseModel.find(filterQuery).countDocuments();
@@ -45,7 +46,7 @@ export class ExercisesService {
 
   async getById(id: string): Promise<Exercise | null> {
     this.logger.debug(`Get exercise ID ${id}.`);
-    return this.exerciseModel.findById(id).exec();
+    return this.exerciseModel.findById(id).populate('equipment').exec();
   }
 
   async update(

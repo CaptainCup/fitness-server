@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Equipment } from './schemas/equipment.schema';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { GetEquipmentDto } from './dto/get-equipment.dto';
+import { Exercise } from 'src/exercises/schemas/exercise.schema';
 
 @Injectable()
 export class EquipmentService {
@@ -11,6 +12,7 @@ export class EquipmentService {
 
   constructor(
     @InjectModel(Equipment.name) private equipmentModel: Model<Equipment>,
+    @InjectModel(Exercise.name) private exerciseModel: Model<Exercise>,
   ) {}
 
   async create(createEquipmentDto: CreateEquipmentDto): Promise<Equipment> {
@@ -45,7 +47,18 @@ export class EquipmentService {
 
   async getById(id: string): Promise<Equipment | null> {
     this.logger.debug(`Get equipment ID ${id}.`);
-    return this.equipmentModel.findById(id).exec();
+
+    const exercises = await this.exerciseModel
+      .find({ equipment: { $in: id } })
+      .exec();
+
+    const equipment = await this.equipmentModel.findById(id).exec();
+
+    if (equipment) {
+      equipment.exercises = exercises;
+    }
+
+    return equipment;
   }
 
   async update(
