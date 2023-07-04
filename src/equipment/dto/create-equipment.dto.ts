@@ -8,5 +8,8 @@ export class CreateEquipmentDto {
   readonly description: string;
 
   @ApiPropertyOptional()
+  readonly image: string;
+
+  @ApiPropertyOptional()
   readonly configuration: { image?: string; text: string }[];
 }

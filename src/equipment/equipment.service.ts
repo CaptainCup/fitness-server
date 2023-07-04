@@ -1,5 +1,5 @@
 import { Model, FilterQuery } from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Equipment } from './schemas/equipment.schema';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
@@ -7,12 +7,15 @@ import { GetEquipmentDto } from './dto/get-equipment.dto';
 
 @Injectable()
 export class EquipmentService {
+  private logger = new Logger('Equipment');
+
   constructor(
     @InjectModel(Equipment.name) private equipmentModel: Model<Equipment>,
   ) {}
 
   async create(createEquipmentDto: CreateEquipmentDto): Promise<Equipment> {
     const createdEquipment = new this.equipmentModel(createEquipmentDto);
+    this.logger.debug(`Equipment ${createEquipmentDto.name} created.`);
     return createdEquipment.save();
   }
 
@@ -35,10 +38,13 @@ export class EquipmentService {
 
     const count = await this.equipmentModel.find(filterQuery).countDocuments();
 
+    this.logger.debug(`Get equipment.`);
+
     return { items, count };
   }
 
   async getById(id: string): Promise<Equipment | null> {
+    this.logger.debug(`Get equipment ID ${id}.`);
     return this.equipmentModel.findById(id).exec();
   }
 
@@ -49,8 +55,10 @@ export class EquipmentService {
     const equipment = await this.equipmentModel.findById(id).exec();
 
     if (equipment) {
+      this.logger.debug(`Equipment ID ${id} updated.`);
       return equipment.updateOne(createEquipmentDto);
     } else {
+      this.logger.error(`Equipment ID ${id} not found.`);
       throw new NotFoundException(
         `Оборудование с идентификатором ${id} не найдено`,
       );
@@ -61,8 +69,10 @@ export class EquipmentService {
     const equipment = await this.equipmentModel.findById(id).exec();
 
     if (equipment) {
+      this.logger.debug(`Equipment ID ${id} deleted.`);
       equipment.deleteOne();
     } else {
+      this.logger.error(`Equipment ID ${id} not found.`);
       throw new NotFoundException(
         `Оборудование с идентификатором ${id} не найдено`,
       );

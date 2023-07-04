@@ -27,7 +27,7 @@ export class EquipmentController {
   }
 
   @Get('/:id')
-  async getServiceByID(@Param('id') id: string): Promise<Equipment | null> {
+  async getEquipmentByID(@Param('id') id: string): Promise<Equipment | null> {
     return this.equipmentService.getById(id);
   }
 
