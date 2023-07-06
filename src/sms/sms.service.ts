@@ -2,11 +2,11 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AxiosResponse } from 'axios';
 import { SendSmsDto } from './dto/send-sms.dto';
 import { AcceptPhoneDto } from './dto/accept-phone.dto';
 import { SmsToken } from './schemas/sms.schema';
@@ -14,18 +14,20 @@ import { SmsToken } from './schemas/sms.schema';
 const smscConfig = {
   login: 'poi.lincoln@gmail.com',
   api: 'zUjjIdG4aw7qY6TRnv2KNyXIGm',
-  sign: 'Fitness',
+  sign: 'SMS Aero',
 };
 
 @Injectable()
 export class SmsService {
+  private logger = new Logger('SMS');
+
   constructor(
     @InjectModel(SmsToken.name) private smsTokenModel: Model<SmsToken>,
     private readonly httpService: HttpService,
   ) {}
 
   phoneToken = () => {
-    const possible = '0123456789';
+    const possible = '123456789';
     let string = '';
     for (let i = 0; i < 4; i++) {
       string += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -34,7 +36,7 @@ export class SmsService {
     return string;
   };
 
-  async send(smsDto: SendSmsDto): Promise<AxiosResponse<string>> {
+  async send(smsDto: SendSmsDto): Promise<void> {
     const { login, api, sign } = smscConfig;
     const params = { ...smsDto, sign };
 
@@ -42,17 +44,18 @@ export class SmsService {
       .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
       .join('&');
 
-    const baseUrl = `https://${login}:${api}@gate.smsaero.ru/v2/sms/send?${query}`;
-    const result = await this.httpService.get(baseUrl).toPromise();
-    return result?.data;
+    const baseUrl = `https://${login}:${api}@gate.smsaero.ru/v2/sms/testsend?${query}`;
+
+    await this.httpService.get(baseUrl);
+
+    this.logger.debug(`Send message to ${smsDto.number}`);
   }
 
-  async sendAcceptCode(
-    acceptPhoneDto: AcceptPhoneDto,
-  ): Promise<AxiosResponse<string>> {
+  async sendAcceptCode(acceptPhoneDto: AcceptPhoneDto): Promise<void> {
     const { phone } = acceptPhoneDto;
     const currentDate = Date.now();
     const code = this.phoneToken();
+
     await this.smsTokenModel.create({
       phone,
       token: code,
@@ -60,11 +63,10 @@ export class SmsService {
       endAt: currentDate + 1000 * 60 * 5,
     });
 
-    const message = await this.send({
+    await this.send({
       number: phone,
-      text: code,
+      text: `Код: ${code}`,
     });
-    return message;
   }
 
   async acceptPhone(acceptPhoneDto: AcceptPhoneDto) {

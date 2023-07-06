@@ -4,5 +4,4 @@ export interface JwtPayload {
 
 export interface RefreshPayload {
   user: string;
-  ua: string;
 }

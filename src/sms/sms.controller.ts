@@ -1,6 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AxiosResponse } from 'axios';
 import { SmsService } from './sms.service';
 import { AcceptPhoneDto } from './dto/accept-phone.dto';
 
@@ -10,9 +9,7 @@ export class SmsController {
   constructor(private readonly smsService: SmsService) {}
 
   @Post()
-  sendCode(
-    @Body() acceptPhoneDto: AcceptPhoneDto,
-  ): Promise<AxiosResponse<string>> {
+  sendCode(@Body() acceptPhoneDto: AcceptPhoneDto): Promise<void> {
     return this.smsService.sendAcceptCode(acceptPhoneDto);
   }
 }
