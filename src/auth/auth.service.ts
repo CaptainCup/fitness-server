@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/schemas/user.schema';
 import { SmsService } from 'src/sms/sms.service';
 import { UsersService } from 'src/users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -24,9 +23,9 @@ export class AuthService {
   ) {}
 
   private async checkVerificationCode(
-    registrationCredentialsDto: RegistrationCredentialsDto,
+    authCredentialsDto: AuthCredentialsDto,
   ): Promise<void> {
-    const { phone, code } = registrationCredentialsDto;
+    const { phone, code } = authCredentialsDto;
 
     const item = await this.smsService.getToken(phone);
 
@@ -49,7 +48,7 @@ export class AuthService {
 
     await this.checkVerificationCode(registrationCredentialsDto);
 
-    const user = await this.usersService.create({ phone });
+    const user = await this.usersService.create(registrationCredentialsDto);
 
     return this.authUser(user);
   }

@@ -1,9 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RegistrationCredentialsDto {
-  @ApiProperty()
-  readonly phone: string;
+  @ApiPropertyOptional()
+  firstName?: string;
+
+  @ApiPropertyOptional()
+  lastName?: string;
+
+  @ApiPropertyOptional()
+  middleName?: string;
+
+  @ApiPropertyOptional()
+  avatar?: string;
 
   @ApiProperty()
-  readonly code: number;
+  phone: string;
+
+  @ApiProperty()
+  code: string;
 }

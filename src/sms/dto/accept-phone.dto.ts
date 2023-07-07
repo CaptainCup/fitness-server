@@ -5,5 +5,5 @@ export class AcceptPhoneDto {
   readonly phone: string;
 
   @ApiProperty()
-  readonly code: number;
+  readonly code: string;
 }

@@ -74,7 +74,7 @@ export class SmsService {
     const smsToken = await this.getToken(phone);
     const currentTime = new Date();
 
-    if (smsToken && smsToken.token === +code) {
+    if (smsToken && smsToken.token === code) {
       if (currentTime < smsToken.endAt) {
         return { success: true, message: 'Номер телефона подтвержден' };
       } else {

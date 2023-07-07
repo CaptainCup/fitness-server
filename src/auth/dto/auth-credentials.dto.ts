@@ -5,5 +5,5 @@ export class AuthCredentialsDto {
   readonly phone: string;
 
   @ApiProperty()
-  readonly code: number;
+  readonly code: string;
 }

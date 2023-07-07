@@ -9,7 +9,7 @@ export class SmsToken {
   phone: string;
 
   @Prop({ required: true })
-  token: number;
+  token: string;
 
   @Prop({ required: true })
   createdAt: Date;
