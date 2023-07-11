@@ -44,7 +44,7 @@ export class SmsService {
       .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
       .join('&');
 
-    const baseUrl = `https://${login}:${api}@gate.smsaero.ru/v2/sms/testsend?${query}`;
+    const baseUrl = `https://${login}:${api}@gate.smsaero.ru/v2/sms/send?${query}`;
 
     await this.httpService.get(baseUrl);
 
