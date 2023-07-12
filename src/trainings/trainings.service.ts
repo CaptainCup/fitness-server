@@ -32,6 +32,7 @@ export class TrainingsService {
 
     const items = await this.trainingModel
       .find(filterQuery)
+      .sort({ date: -1 })
       .limit(parseInt(limit))
       .skip(parseInt(offset))
       .populate('exercises.exercise')
@@ -46,7 +47,10 @@ export class TrainingsService {
 
   async getById(id: string): Promise<Training | null> {
     this.logger.debug(`Get training ID ${id}.`);
-    return this.trainingModel.findById(id).populate('equipment').exec();
+    return this.trainingModel
+      .findById(id)
+      .populate('exercises.exercise')
+      .exec();
   }
 
   async update(
