@@ -24,12 +24,16 @@ export class EquipmentService {
   async getList(
     getEquipmentDto: GetEquipmentDto,
   ): Promise<{ items: Equipment[]; count: number }> {
-    const { search, limit = '10', offset = '0' } = getEquipmentDto;
+    const { search, exclude, limit = '10', offset = '0' } = getEquipmentDto;
 
     const filterQuery: FilterQuery<Equipment> = {};
 
     if (search) {
       filterQuery.name = { $regex: search, $options: 'i' };
+    }
+
+    if (exclude) {
+      filterQuery._id = { $nin: exclude.map((id) => id) };
     }
 
     const items = await this.equipmentModel

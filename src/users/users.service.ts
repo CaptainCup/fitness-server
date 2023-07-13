@@ -25,7 +25,11 @@ export class UsersService {
     const filterQuery: FilterQuery<User> = {};
 
     if (search) {
-      filterQuery.firstName = { $regex: search, $options: 'i' };
+      filterQuery.$or = [
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
+      ];
     }
 
     const items = await this.userModel

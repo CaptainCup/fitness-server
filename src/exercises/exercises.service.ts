@@ -22,12 +22,16 @@ export class ExercisesService {
   async getList(
     getExerciseDto: GetExerciseDto,
   ): Promise<{ items: Exercise[]; count: number }> {
-    const { search, limit = '10', offset = '0' } = getExerciseDto;
+    const { search, exclude, limit = '10', offset = '0' } = getExerciseDto;
 
     const filterQuery: FilterQuery<Exercise> = {};
 
     if (search) {
       filterQuery.name = { $regex: search, $options: 'i' };
+    }
+
+    if (exclude) {
+      filterQuery._id = { $nin: exclude.map((id) => id) };
     }
 
     const items = await this.exerciseModel

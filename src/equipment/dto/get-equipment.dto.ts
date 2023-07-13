@@ -5,6 +5,9 @@ export class GetEquipmentDto {
   readonly search?: string;
 
   @ApiPropertyOptional()
+  readonly exclude?: string[];
+
+  @ApiPropertyOptional()
   readonly limit?: string;
 
   @ApiPropertyOptional()
