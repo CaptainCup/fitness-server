@@ -7,8 +7,12 @@ import {
   Patch,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { AdminGuard } from 'src/_common/guards/admin.guard';
+import { AdminPermissions } from 'src/users/enums/admin-permissions';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { GetExerciseDto } from './dto/get-exercise.dto';
 import { ExercisesService } from './exercises.service';
@@ -32,11 +36,13 @@ export class ExercisesController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt'), new AdminGuard(AdminPermissions.trainer))
   addExercise(@Body() createExerciseDto: CreateExerciseDto): Promise<Exercise> {
     return this.exercisesService.create(createExerciseDto);
   }
 
   @Patch('/:id')
+  @UseGuards(AuthGuard('jwt'), new AdminGuard(AdminPermissions.trainer))
   updateExercise(
     @Param('id') id: string,
     @Body() createExerciseDto: CreateExerciseDto,
@@ -45,6 +51,7 @@ export class ExercisesController {
   }
 
   @Delete('/:id')
+  @UseGuards(AuthGuard('jwt'), new AdminGuard(AdminPermissions.admin))
   deleteExercise(@Param('id') id: string): Promise<void> {
     return this.exercisesService.delete(id);
   }

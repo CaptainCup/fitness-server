@@ -7,8 +7,12 @@ import {
   Patch,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { AdminGuard } from 'src/_common/guards/admin.guard';
+import { AdminPermissions } from 'src/users/enums/admin-permissions';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { GetEquipmentDto } from './dto/get-equipment.dto';
 import { EquipmentService } from './equipment.service';
@@ -32,6 +36,7 @@ export class EquipmentController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt'), new AdminGuard(AdminPermissions.trainer))
   addEquipment(
     @Body() createEquipmentDto: CreateEquipmentDto,
   ): Promise<Equipment> {
@@ -39,6 +44,7 @@ export class EquipmentController {
   }
 
   @Patch('/:id')
+  @UseGuards(AuthGuard('jwt'), new AdminGuard(AdminPermissions.trainer))
   updateEquipment(
     @Param('id') id: string,
     @Body() createEquipmentDto: CreateEquipmentDto,
@@ -47,6 +53,7 @@ export class EquipmentController {
   }
 
   @Delete('/:id')
+  @UseGuards(AuthGuard('jwt'), new AdminGuard(AdminPermissions.admin))
   deleteEquipment(@Param('id') id: string): Promise<void> {
     return this.equipmentService.delete(id);
   }
