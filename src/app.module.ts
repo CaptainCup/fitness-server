@@ -8,12 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { SmsModule } from './sms/sms.module';
 import { TrainingsModule } from './trainings/trainings.module';
 
-// const dbURL =
-//   process.env.NODE_ENV !== 'production'
-//     ? 'mongodb://127.0.0.1:27017'
-//     : 'mongodb://45.84.227.184:27017';
-
-const dbURL = 'mongodb://127.0.0.1:27017';
+const dbURL =
+  process.env.NODE_ENV !== 'production'
+    ? 'mongodb://127.0.0.1:27017'
+    : 'mongodb://madmin:tZR5MLECZ*yx@localhost:27017';
 
 @Module({
   imports: [
