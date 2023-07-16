@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { GetTrainingDto } from './dto/get-training.dto';
+import { LastExerciseResultsDto } from './dto/last-exercise-results.dto';
 import { TrainingsService } from './trainings.service';
 import { Training } from './schemas/training.schema';
 
@@ -26,8 +27,15 @@ export class TrainingsController {
     return this.trainingsService.getList(getTrainingDto);
   }
 
+  @Get('/last-exercise-results')
+  getLastExerciseResults(
+    @Query() lastExerciseResultsDto: LastExerciseResultsDto,
+  ): Promise<{ approaches: string[][]; date: Date } | null> {
+    return this.trainingsService.lastExerciseResults(lastExerciseResultsDto);
+  }
+
   @Get('/:id')
-  async getTrainingByID(@Param('id') id: string): Promise<Training | null> {
+  getTrainingByID(@Param('id') id: string): Promise<Training | null> {
     return this.trainingsService.getById(id);
   }
 

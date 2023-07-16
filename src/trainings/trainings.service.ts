@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Training } from './schemas/training.schema';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { GetTrainingDto } from './dto/get-training.dto';
+import { LastExerciseResultsDto } from './dto/last-exercise-results.dto';
 
 @Injectable()
 export class TrainingsService {
@@ -82,5 +83,41 @@ export class TrainingsService {
         `Тренировка с идентификатором ${id} не найдена`,
       );
     }
+  }
+
+  async lastExerciseResults(
+    lastExerciseResultsDto: LastExerciseResultsDto,
+  ): Promise<{ approaches: string[][]; date: Date } | null> {
+    const { user: userId, exercise: exerciseId } = lastExerciseResultsDto;
+
+    this.logger.debug(`Last results for exercise ID ${exerciseId}.`);
+
+    const items = await this.trainingModel
+      .find({
+        user: userId,
+        exercises: {
+          $elemMatch: {
+            exercise: exerciseId,
+            approaches: { $ne: [] },
+          },
+        },
+      })
+      .sort({ date: -1 })
+      .exec();
+
+    if (items.length) {
+      const lastTrainingWithExercise = items[0];
+      const currentExercise = lastTrainingWithExercise.exercises.find(
+        ({ exercise }) => exercise.toString() === exerciseId,
+      );
+      return currentExercise?.approaches
+        ? {
+            approaches: currentExercise?.approaches,
+            date: lastTrainingWithExercise.date,
+          }
+        : null;
+    }
+
+    return null;
   }
 }
