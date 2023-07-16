@@ -5,7 +5,7 @@ export type TrainingDocument = HydratedDocument<Training>;
 
 @Schema()
 export class Training {
-  @Prop({ required: true })
+  @Prop({ default: new Date() })
   date: Date;
 
   @Prop({
