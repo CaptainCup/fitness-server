@@ -15,8 +15,25 @@ export class ExercisesService {
 
   async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
     const createdExercise = new this.exerciseModel(createExerciseDto);
+
+    createdExercise.save();
+
     this.logger.debug(`Exercise ${createExerciseDto.name} created.`);
-    return createdExercise.save();
+
+    const { similar } = createExerciseDto;
+
+    if (similar?.length) {
+      await this.exerciseModel.updateMany(
+        { _id: { $in: similar } },
+        {
+          $addToSet: {
+            similar: createdExercise._id,
+          },
+        },
+      );
+    }
+
+    return createdExercise;
   }
 
   async getList(
@@ -66,6 +83,20 @@ export class ExercisesService {
 
     if (exercise) {
       this.logger.debug(`Exercise ID ${id} updated.`);
+
+      const { similar } = createExerciseDto;
+
+      if (similar?.length) {
+        await this.exerciseModel.updateMany(
+          { _id: { $in: similar } },
+          {
+            $addToSet: {
+              similar: id,
+            },
+          },
+        );
+      }
+
       return exercise.updateOne(createExerciseDto);
     } else {
       this.logger.error(`Exercise ID ${id} not found.`);
