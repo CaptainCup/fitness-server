@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Measurement } from '../enums/measurement.enum';
+import { Muscule } from '../enums/muscules.enum';
 
 export type ExerciseDocument = HydratedDocument<Exercise>;
 
@@ -26,6 +27,10 @@ export class Exercise {
   @ApiPropertyOptional()
   @Prop()
   execution?: { image?: string; text: string }[];
+
+  @ApiPropertyOptional()
+  @Prop()
+  muscules?: Muscule[];
 
   @ApiPropertyOptional()
   @Prop([

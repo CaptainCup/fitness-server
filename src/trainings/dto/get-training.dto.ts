@@ -8,6 +8,9 @@ export class GetTrainingDto {
   readonly user?: string;
 
   @ApiPropertyOptional()
+  readonly exercises?: string[];
+
+  @ApiPropertyOptional()
   readonly limit?: string;
 
   @ApiPropertyOptional()

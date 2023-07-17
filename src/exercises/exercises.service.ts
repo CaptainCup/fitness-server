@@ -39,7 +39,13 @@ export class ExercisesService {
   async getList(
     getExerciseDto: GetExerciseDto,
   ): Promise<{ items: Exercise[]; count: number }> {
-    const { search, exclude, limit = '10', offset = '0' } = getExerciseDto;
+    const {
+      search,
+      exclude,
+      muscules,
+      limit = '10',
+      offset = '0',
+    } = getExerciseDto;
 
     const filterQuery: FilterQuery<Exercise> = {};
 
@@ -47,8 +53,12 @@ export class ExercisesService {
       filterQuery.name = { $regex: search, $options: 'i' };
     }
 
-    if (exclude) {
-      filterQuery._id = { $nin: exclude.map((id) => id) };
+    if (exclude?.length) {
+      filterQuery._id = { $nin: exclude };
+    }
+
+    if (muscules?.length) {
+      filterQuery.muscules = { $in: muscules };
     }
 
     const items = await this.exerciseModel

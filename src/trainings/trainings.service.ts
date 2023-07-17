@@ -23,12 +23,16 @@ export class TrainingsService {
   async getList(
     getTrainingDto: GetTrainingDto,
   ): Promise<{ items: Training[]; count: number }> {
-    const { user, limit = '10', offset = '0' } = getTrainingDto;
+    const { user, limit = '10', offset = '0', exercises } = getTrainingDto;
 
     const filterQuery: FilterQuery<Training> = {};
 
     if (user) {
       filterQuery.user = user;
+    }
+
+    if (exercises?.length) {
+      filterQuery['exercises.exercise'] = { $in: exercises };
     }
 
     const items = await this.trainingModel

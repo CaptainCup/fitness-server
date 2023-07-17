@@ -32,8 +32,8 @@ export class EquipmentService {
       filterQuery.name = { $regex: search, $options: 'i' };
     }
 
-    if (exclude) {
-      filterQuery._id = { $nin: exclude.map((id) => id) };
+    if (exclude?.length) {
+      filterQuery._id = { $nin: exclude };
     }
 
     const items = await this.equipmentModel
