@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTrainingDto {
-  @ApiPropertyOptional({ default: new Date() })
+  @ApiPropertyOptional({ default: Date.now })
   readonly date?: Date;
 
   @ApiProperty()
