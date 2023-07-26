@@ -12,6 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { GetTrainingDto } from './dto/get-training.dto';
 import { LastExerciseResultsDto } from './dto/last-exercise-results.dto';
+import { GetTrainingDatesDto } from './dto/get-dates.dto';
 import { TrainingsService } from './trainings.service';
 import { Training } from './schemas/training.schema';
 
@@ -25,6 +26,13 @@ export class TrainingsController {
     @Query() getTrainingDto: GetTrainingDto,
   ): Promise<{ items: Training[]; count: number }> {
     return this.trainingsService.getList(getTrainingDto);
+  }
+
+  @Get('/dates')
+  getTrainingDates(
+    @Query() getTrainingDatesDto: GetTrainingDatesDto,
+  ): Promise<Date[]> {
+    return this.trainingsService.getDates(getTrainingDatesDto);
   }
 
   @Get('/last-exercise-results')

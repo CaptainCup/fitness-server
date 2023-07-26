@@ -1,10 +1,12 @@
 import { Model, FilterQuery } from 'mongoose';
+import * as moment from 'moment';
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Training } from './schemas/training.schema';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { GetTrainingDto } from './dto/get-training.dto';
 import { LastExerciseResultsDto } from './dto/last-exercise-results.dto';
+import { GetTrainingDatesDto } from './dto/get-dates.dto';
 
 @Injectable()
 export class TrainingsService {
@@ -23,12 +25,28 @@ export class TrainingsService {
   async getList(
     getTrainingDto: GetTrainingDto,
   ): Promise<{ items: Training[]; count: number }> {
-    const { user, limit = '10', offset = '0', exercises } = getTrainingDto;
+    const {
+      user,
+      date,
+      limit = '10',
+      offset = '0',
+      exercises,
+    } = getTrainingDto;
 
     const filterQuery: FilterQuery<Training> = {};
 
     if (user) {
       filterQuery.user = user;
+    }
+
+    if (date) {
+      const fromDate = moment(date).startOf('day').toDate();
+      const toDate = moment(date).endOf('day').toDate();
+
+      filterQuery.date = {
+        $gte: fromDate,
+        $lte: toDate,
+      };
     }
 
     if (exercises?.length) {
@@ -48,6 +66,23 @@ export class TrainingsService {
     this.logger.debug(`Get trainings.`);
 
     return { items, count };
+  }
+
+  async getDates(getTrainingDatesDto: GetTrainingDatesDto): Promise<Date[]> {
+    const { user } = getTrainingDatesDto;
+
+    const dates = await this.trainingModel
+      .find({ user }, { date: 1 })
+      .sort({ date: -1 })
+      .exec();
+
+    this.logger.debug(`Get trainings dates.`);
+
+    if (dates.length) {
+      return dates.map(({ date }) => date);
+    } else {
+      throw new NotFoundException('Тренировок не найдено');
+    }
   }
 
   async getById(id: string): Promise<Training | null> {
